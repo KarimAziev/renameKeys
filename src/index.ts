@@ -37,7 +37,7 @@ export function renameKeys<RenameMap, Obj>(
   renameMap: Narrow<RenameMap> | RenameMap,
   obj: Obj
 ) {
-  const keys = Object.keys(obj as Record<any, any>);
+  const keys = Object.keys(obj as any);
   return keys.reduce(
     (acc, key) => {
       const newName = (renameMap as any)[key as keyof RenameMap & Obj] || key;
@@ -50,7 +50,7 @@ export function renameKeys<RenameMap, Obj>(
         ? Narrow<RenameMap>[K] extends string
           ? Narrow<RenameMap>[K]
           : never
-        : never]: K extends keyof Obj ? Obj[K] : never;
+        : K]: K extends keyof Obj ? Obj[K] : never;
     }
   );
 }
@@ -71,6 +71,6 @@ export function renameKeys<RenameMap, Obj>(
  * RESULTS: { id: 1234578, user: 'John' }
  */
 export const curriedRenameKeys =
-  (renameMap: any) =>
-  <Obj>(obj: Narrow<Obj>) =>
+  <RenameMap, Obj>(renameMap: RenameMap) =>
+  (obj: Obj) =>
     renameKeys(renameMap, obj);
