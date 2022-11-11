@@ -9,16 +9,16 @@ the keys renamed according to `renameMap`.
 
 ```typescript
 renameKeys({ _id: 'id' }, { _id: 1234578 });
-// => RESULTS: { id: 1234578 }
+// → { id: 1234578 }
 
 renameKeys({ _id: 'id' }, { _id: 1234578, name: 'John' });
-// => RESULTS: { id: 1234578, name: 'John' }
+// → { id: 1234578, name: 'John' }
 
 renameKeys({ _id: 'id', name: 'user' }, { _id: 1234578, name: 'John' });
-// => RESULTS: { id: 1234578, user: 'John' }
+// → { id: 1234578, user: 'John' }
 ```
 
-## curriedRenameKeys (renameMap) =\> (obj)
+## curriedRenameKeys (renameMap)→(obj)
 
 Unlike `renameKeys`, in the curried version you need to specify types.
 
