@@ -1,6 +1,6 @@
 {
   "name": "renamekeys",
-  "version": "1.0.2008",
+  "version": "1.0.2009",
   "description": "Typed rename object keys.",
   "main": "lib/index.js",
   "scripts": {
