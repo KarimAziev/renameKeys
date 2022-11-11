@@ -6,15 +6,6 @@ export type RenameByT<RenameMap, Obj> = {
     : K]: K extends keyof Obj ? Obj[K] : never;
 };
 
-export type Cast<A, B> = A extends B ? A : B;
-
-export type Narrowable = string | number | bigint | boolean;
-
-export type Narrow<A> = Cast<
-  A,
-  [] | (A extends Narrowable ? A : never) | { [K in keyof A]: Narrow<A[K]> }
->;
-
 /**
  * Creates a new object with the own properties of the provided object, but the
  * keys renamed according to renameMap
@@ -33,27 +24,28 @@ export type Narrow<A> = Cast<
  * RESULTS: { id: 1234578, user: 'John' }
  */
 
-export function renameKeys<RenameMap, Obj>(
-  renameMap: Narrow<RenameMap> | RenameMap,
+export const renameKeys = <RenameMap, Obj extends Record<any, any>>(
+  renameMap: RenameMap,
   obj: Obj
-) {
-  const keys = Object.keys(obj as any);
+) => {
+  const keys = Object.keys(obj);
   return keys.reduce(
     (acc, key) => {
-      const newName = (renameMap as any)[key as keyof RenameMap & Obj] || key;
-      (acc as Record<any, any>)[newName] = (obj as Record<any, any>)[key];
+      const newName = renameMap[key as keyof RenameMap & Obj] || key;
+      (acc as any)[newName] = obj[key];
 
       return acc;
     },
     {} as {
-      [K in keyof Obj as K extends keyof Narrow<RenameMap>
-        ? Narrow<RenameMap>[K] extends string
-          ? Narrow<RenameMap>[K]
+      [K in keyof Obj as K extends keyof RenameMap
+        ? RenameMap[K] extends string
+          ? RenameMap[K]
           : never
         : K]: K extends keyof Obj ? Obj[K] : never;
     }
   );
-}
+};
+
 /**
  * Curried version of `renameKeys`  (See {@link renameKeys})
  * @param renameMap - object of form `{ oldKey: newKey }`.
@@ -70,7 +62,8 @@ export function renameKeys<RenameMap, Obj>(
  * curriedRenameKeys({ _id: 'id', name: 'user' })({ _id: 1234578, name: 'John' });
  * RESULTS: { id: 1234578, user: 'John' }
  */
+
 export const curriedRenameKeys =
-  <RenameMap, Obj>(renameMap: RenameMap) =>
+  <RenameMap, Obj extends Record<any, any>>(renameMap: RenameMap) =>
   (obj: Obj) =>
-    renameKeys(renameMap, obj);
+    renameKeys<RenameMap, Obj>(renameMap, obj);
